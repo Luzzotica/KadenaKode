@@ -1,5 +1,8 @@
-main {
-  text-align: center;
-  vertical-align: center;
-  line-height: 100vh
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "CURSIVE";
+  src: url("./assets/fonts/cursive.woff2");
 }
