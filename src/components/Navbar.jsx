@@ -21,13 +21,8 @@ function Navbar() {
     <nav className="w-full flex flex-row justify-between place-items-center p-4 h-40">
       <div className="relative">
         <span className="text-7xl font-medium">
-          $DOC
+          KadenaKode
         </span>
-        <div className="absolute -bottom-6 -right-14 -rotate-12">
-          <span className="text-6xl font-cursive text-red-500">
-            Admin
-          </span>
-        </div>
       </div>
       <div className="flex flex-col justify-between place-items-center space-y-2">
         <CustomButton
