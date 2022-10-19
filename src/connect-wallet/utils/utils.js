@@ -1,6 +1,6 @@
 import Pact from 'pact-lang-api';
 import { toast } from 'react-toastify';
-import { X_WALLET, ZELCORE } from '../redux/kadenaSlice';
+import { X_WALLET, ZELCORE } from '../constants/constants';
 
 export const creationTime = () => String(Math.round(new Date().getTime() / 1000) - 10);
 

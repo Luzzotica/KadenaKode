@@ -1,18 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { toast } from 'react-toastify';
+import { X_WALLET, ZELCORE } from '../constants/constants';
+import { createSigningCommand, localCommand, sendCommand, signCommand } from '../utils/utils';
 import { hideModal } from './modalSlice';
-
-export const X_WALLET = 'X_WALLET';
-export const ZELCORE = 'ZELCORE';
 
 export const kadenaSlice = createSlice({
   name: 'kadenaInfo',
   initialState: {
-    network: import.meta.env.VITE_NETWORK, //process.env.NETWORK,
-    networkId: import.meta.env.VITE_NETWORK_ID, //process.env.NETWORK_ID,
-    chainId: import.meta.env.VITE_CHAIN_ID,
-    gasLimit: Number(import.meta.env.VITE_GAS_LIMIT),
-    gasPrice: Number(import.meta.env.VITE_GAS_PRICE),
+    network: 'https://api.testnet.chainweb.com/chainweb/0.0/testnet04/chain/1/pact',
+    networkId: 'testnet04',
+    chainId: '1',
+    gasLimit: 15000,
+    gasPrice: 1e-5,
     ttl: 600,
     provider: '',
     account: '',
@@ -27,6 +26,11 @@ export const kadenaSlice = createSlice({
     },
     setChainId: (state, action) => {
       state.chainId = action.payload;
+    },
+    setNetworkInfo: (state, action) => {
+      state.chainId = action.payload.chainId;
+      state.networkId = action.payload.networkId;
+      state.network = `${action.payload.networkRoot}/chainweb/0.0/${state.networkId}/chain/${state.chainId}/pact`
     },
     setGasLimit: (state, action) => {
       state.gasLimit = action.payload;
@@ -66,6 +70,31 @@ export const connectXWallet = () => {
   }
 }
 
+export const connectZelcore = () => {
+  return async function connect(dispatch, getState) {
+    try {
+      const accounts = await fetch("http://127.0.0.1:9467/v1/accounts", {
+        headers: {
+            "Content-Type": "application/json",
+        },
+        method: "POST",
+        body: JSON.stringify({ asset: "kadena" }),
+      });
+
+      const accountsJson = await accounts.json();
+      console.log(accountsJson);
+
+      dispatch(kadenaSlice.actions.setProvider(ZELCORE));
+      dispatch(kadenaSlice.actions.setAccount(accountsJson.data[0]));
+      dispatch(kadenaSlice.actions.setPubKey(accountsJson.data[1]));
+      dispatch(hideModal());
+    }
+    catch (e) {
+      toast.error('Failed to connect to zelcore.');
+    }
+  };
+}; 
+
 export const disconnectWallet = () => {
   return async function disconnectWallet(dispatch, getState) {
     let networkId = getState().kadenaInfo.networkId;
@@ -95,31 +124,32 @@ export const disconnectWallet = () => {
   }
 }
 
-export const connectZelcore = () => {
-  return async function connect(dispatch, getState) {
+export const signAndSend = (localOrSend, pactCode, envData) => {
+  return async function sign(dispatch, getState) {
     try {
-      const accounts = await fetch("http://127.0.0.1:9467/v1/accounts", {
-        headers: {
-            "Content-Type": "application/json",
-        },
-        method: "POST",
-        body: JSON.stringify({ asset: "kadena" }),
-      });
+      console.log('got here');
+      if (localOrSend === 'local') {
+        let res = await localCommand(getState, pactCode, envData);
+        console.log(res);
+        toast.success(JSON.stringify(res.result));
+      }
+      else {
+        let signingCmd = createSigningCommand(getState, pactCode, envData);
+        console.log(signingCmd);
+        let signedCmd = await signCommand(getState, signingCmd);
+        console.log(signedCmd);
+        let res = await sendCommand(getState, signedCmd);
+        console.log(res);
+        toast.success(JSON.stringify(res));
+      }
 
-      const accountsJson = await accounts.json();
-      console.log(accountsJson);
-
-      dispatch(kadenaSlice.actions.setProvider(ZELCORE));
-      dispatch(kadenaSlice.actions.setAccount(accountsJson.data[0]));
-      dispatch(kadenaSlice.actions.setPubKey(accountsJson.data[1]));
-      dispatch(hideModal());
     }
     catch (e) {
-      toast.error('Failed to connect to zelcore.');
+      toast.error('Failed to sign command');
     }
   };
-}; 
+}
 
-export const { setNetwork, setNetworkId, setWallet, setAccount, setPubKey } = kadenaSlice.actions
+export const { setNetwork, setNetworkId, setChainId, setNetworkInfo, setWallet, setAccount, setPubKey } = kadenaSlice.actions
 
 export default kadenaSlice.reducer
