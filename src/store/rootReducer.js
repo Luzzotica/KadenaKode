@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
-import modalSlice from "../connect-wallet/store/modalSlice";
-import kadenaSlice from "../connect-wallet/store/kadenaSlice.js";
+import modalSlice from "../kda-wallet/store/modalSlice";
+import kadenaSlice from "../kda-wallet/store/kadenaSlice";
 
 const rootReducer = combineReducers({
   kadenaInfo: kadenaSlice,

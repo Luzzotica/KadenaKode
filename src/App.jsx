@@ -2,7 +2,7 @@ import './App.css';
 import Navbar from './components/Navbar';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import ConnectWalletModal from './connect-wallet/components/ConnectWalletModal';
+import ConnectWalletModal from './kda-wallet/components/ConnectWalletModal';
 import FlexColumn from './components/FlexColumn';
 import FlexRow from './components/FlexRow';
 import Tile from './components/tiles/Tile';
@@ -13,8 +13,10 @@ import CustomButton from './components/CustomButton';
 import { useRef } from 'react';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { setNetworkInfo, signAndSend } from './connect-wallet/store/kadenaSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { local, setNetwork, setNetworkId, signAndSend } from './kda-wallet/store/kadenaSlice';
+import { txToastManager, messageToastManager } from './components/TxToastManager';
+import TxRender from './components/TxRender';
 // import CodeMirror from '@uiw/react-codemirror';
 // import { StreamLanguage } from '@codemirror/language';
 // import { clojure } from '@codemirror/legacy-modes/mode/clojure';
@@ -24,6 +26,9 @@ import { setNetworkInfo, signAndSend } from './connect-wallet/store/kadenaSlice'
 
 export default function App() {
   const dispatch = useDispatch();
+  const network = useSelector(state => state.kadenaInfo.network);
+  const networkId = useSelector(state => state.kadenaInfo.networkId);
+  const transactions = useSelector(state => state.kadenaInfo.transactions);
 
   // let pactEditorRef = useRef(null);
   // let envDataRef = useRef(null);
@@ -39,13 +44,13 @@ export default function App() {
   //   capsRef = editor;
   // }
 
+  const [txRenders, setTxRenders] = useState([]);
+
   const [code, setCode] = useState('');
   const [envData, setEnvData] = useState('');
   // const [caps, setCaps] = useState('');
-  const [chainId, setChainId] = useState('');
-  const [network, setNetwork] = useState('');
-  const [networkId, setNetworkId] = useState('');
-  const [localOrSend, setLocalOrSend] = useState('');
+  const [chainId, setChainId] = useState('1');
+  const [localOrSend, setLocalOrSend] = useState('local');
 
   const pactEditorChanged = (value, event) => {
     setCode(value);
@@ -59,30 +64,47 @@ export default function App() {
 
   const onInputChanged = (value) => {
     let id = value.target.id;
+    console.log(id);
     if (id === 'chainId') {
       setChainId(value.nativeEvent.data);
     }
     else if (id === 'network') {
-      setNetwork(value.target.value)
+      dispatch(setNetwork(value.target.value));
     }
     else if (id === 'networkId') {
-      setNetworkId(value.target.value)
+      dispatch(setNetworkId(value.target.value));
     }
     else if (id === 'localOrSend') {
-      setLocalOrSend(value.target.value)
+      setLocalOrSend(value.target.value);
     }
   }
 
+  // useEffect(() => {
+  //   dispatch(setNetworkInfo({
+  //     chainId: chainId,
+  //     networkId: networkId,
+  //     networkRoot: network,
+  //   }));
+  // }, [chainId, network, networkId]);
+
   useEffect(() => {
-    dispatch(setNetworkInfo({
-      chainId: chainId,
-      networkId: networkId,
-      networkRoot: network,
-    }));
-  }, [chainId, network, networkId]);
+    console.log('txs updated');
+    console.log(transactions.length);
+    let renders = [];
+    for (var i = transactions.length - 1; i >= 0; i--) {
+      console.log(transactions[i]);
+      renders.push(<TxRender txData={transactions[i]}/>);
+    }
+    setTxRenders(renders);
+  }, [transactions]);
 
   const runCommand = () => {
-    dispatch(signAndSend(localOrSend, code, envData));
+    if (localOrSend === 'local') {
+      dispatch(local(chainId, code, envData));
+    }
+    else {
+      dispatch(signAndSend(chainId, code, envData));
+    }
   }
 
   return (
@@ -99,7 +121,10 @@ export default function App() {
           draggable
           pauseOnHover
         />
-        <ConnectWalletModal />
+        <ConnectWalletModal 
+          onNewTransaction={txToastManager}
+          onNewMessage={messageToastManager}
+        />
         <Navbar />
         <FlexColumn className='p-2 space-y-4'>
           <FlexRow className='h-16 text-left space-x-2'>
@@ -115,7 +140,7 @@ export default function App() {
               <span>Network:</span>
               <select 
                 id="network" 
-                defaultValue="testnet04" 
+                defaultValue="https://api.testnet.chainweb.com" 
                 className='flex-auto bg-black rounded-md border-white border-2 p-1' 
                 onChange={onInputChanged}
               >
@@ -136,6 +161,21 @@ export default function App() {
               </select>
             </FlexColumn>
           </FlexRow>
+          <FlexColumn className='text-left space-y-2'>
+            <span className='text-2xl'>Env Data:</span>
+            <div className='rounded-lg overflow-hidden'>
+              <MonacoEditor
+                height="100px"
+                language="json"
+                value=''
+                options={{
+                  theme: 'vs-dark',
+                }}
+                onChange={envDataEditorChanged}
+                // editorDidMount={envDataEditorDidMount}
+              />
+            </div>
+          </FlexColumn>
           <FlexColumn className='h-auto text-left space-y-2'>
             <span className='text-2xl'>Code:</span>
             <div className='rounded-lg overflow-hidden'>
@@ -148,7 +188,7 @@ export default function App() {
                 id="code"
                 height="250px"
                 language="clojure"
-                value='(defun hello:string (input:string) (format "Hello {}!" [input]))'
+                value='"Hello"'
                 options={{
                   theme: 'vs-dark',
                 }}
@@ -168,19 +208,8 @@ export default function App() {
             </FlexRow>
           </FlexColumn>
           <FlexColumn className='text-left space-y-2'>
-            <span className='text-2xl'>Env Data:</span>
-            <div className='rounded-lg overflow-hidden'>
-              <MonacoEditor
-                height="100px"
-                language="json"
-                value=''
-                options={{
-                  theme: 'vs-dark',
-                }}
-                onChange={envDataEditorChanged}
-                // editorDidMount={envDataEditorDidMount}
-              />
-            </div>
+            <span className='text-2xl'>Transactions:</span>
+            {txRenders}
           </FlexColumn>
           {/* <FlexColumn className='text-left space-y-2'>
             <span className='text-2xl'>Caps</span>

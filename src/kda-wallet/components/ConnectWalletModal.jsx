@@ -1,25 +1,39 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { connectXWallet, connectZelcore } from "../store/kadenaSlice";
+import xwallet from "../providers/xwallet";
+import zelcore from "../providers/zelcore";
+import { connectWithProvider } from "../store/kadenaSlice";
 import { hideModal } from "../store/modalSlice";
 
 function ConnectWalletModal(props) {
-  // console.log(props);
-  // console.log(props.buttonStyle);
-  const shouldShow = useSelector(state => state.connectWalletModal.showing);
   const dispatch = useDispatch();
+  const shouldShow = useSelector(state => state.connectWalletModal.showing);
+  const newMessage = useSelector(state => state.kadenaInfo.newMessage);
+  const newTransaction = useSelector(state => state.kadenaInfo.newTransaction);
 
   const closeModal = () => {
     dispatch(hideModal());
   }
 
   const connectXWalletClicked = () => {
-    dispatch(connectXWallet());
+    dispatch(connectWithProvider(xwallet));
   }
 
   const connectZelcoreClicked = () => {
-    dispatch(connectZelcore());
+    dispatch(connectWithProvider(zelcore));
   }
+
+  useEffect(() => {
+    if (props.onNewTransaction) {
+      props.onNewTransaction(newTransaction);
+    }
+  }, [newTransaction]);
+
+  useEffect(() => {
+    if (props.onNewMessage) {
+      props.onNewMessage(newMessage);
+    }
+  }, [newMessage]);
 
   if (!shouldShow) {
     return null;

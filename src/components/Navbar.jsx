@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { disconnectWallet } from '../connect-wallet/store/kadenaSlice';
-import { showModal } from '../connect-wallet/store/modalSlice';
-import reduceToken from '../connect-wallet/utils/reduceToken';
+import { disconnectProvider } from '../kda-wallet/store/kadenaSlice';
+import { showModal } from '../kda-wallet/store/modalSlice';
+import reduceToken from '../kda-wallet/utils/reduceToken';
 import CustomButton from './CustomButton'
 
 function Navbar() {
@@ -14,7 +14,7 @@ function Navbar() {
   }
 
   const disconnect = () => {
-    dispatch(disconnectWallet());
+    dispatch(disconnectProvider());
   }
 
   return (
