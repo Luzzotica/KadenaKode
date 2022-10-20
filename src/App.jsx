@@ -5,20 +5,14 @@ import 'react-toastify/dist/ReactToastify.css';
 import ConnectWalletModal from './kda-wallet/components/ConnectWalletModal';
 import FlexColumn from './components/FlexColumn';
 import FlexRow from './components/FlexRow';
-
 import MonacoEditor from '@uiw/react-monacoeditor';
 import CustomButton from './components/CustomButton';
-import { useState } from 'react';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { local, setNetwork, setNetworkId, signAndSend } from './kda-wallet/store/kadenaSlice';
 import { txToastManager, messageToastManager, walletConnectedToastManager } from './components/TxToastManager';
 import TxRender from './components/TxRender';
-// import CodeMirror from '@uiw/react-codemirror';
-// import { StreamLanguage } from '@codemirror/language';
-// import { clojure } from '@codemirror/legacy-modes/mode/clojure';
-// import { dracula } from '@uiw/codemirror-theme-dracula';
-// import CustomButton from './components/CustomButton';
+import pactLanguageSpec from './constants/pactLanguageSpec';
 
 export default function App() {
   const dispatch = useDispatch();
@@ -27,19 +21,14 @@ export default function App() {
   const transactions = useSelector(state => state.kadenaInfo.transactions);
   const account = useSelector(state => state.kadenaInfo.account);
 
-  // let pactEditorRef = useRef(null);
-  // let envDataRef = useRef(null);
-  // let capsRef = useRef(null);
-
-  // const pactEditorDidMount = (editor, monaco) => {
-  //   pactEditorRef = editor;
-  // }
-  // const envDataEditorDidMount = (editor, monaco) => {
-  //   envDataRef = editor;
-  // }
-  // const capsEditorDidMount = (editor, monaco) => {
-  //   capsRef = editor;
-  // }
+  // Setup the pact editor and language
+  const pactEditorDidMount = (editor, monaco) => {
+    monaco.languages.register({
+        id: 'pact'
+    });
+    
+    monaco.languages.setMonarchTokensProvider('pact', pactLanguageSpec);
+  }
 
   const [txRenders, setTxRenders] = useState([]);
 
@@ -140,27 +129,44 @@ export default function App() {
     }
   }, [keysPressed]);
 
-  //// Local Update Timer ////
-  // var timer
-  // const [time, setTime] = useState(Date.now());
 
-  // useEffect(() => {
-  //   timer = setInterval(() => { 
-  //     dispatch(local(chainId, code, envData, [], gasLimit, gasPrice));
-  //   }, 3000);
-  //   return () => {
-  //     clearInterval(timer);
-  //   }
-  // });
+  //// Local Update Timer ////
+  var timer
+  const [localTx, setLocalTx] = useState({});
+
+  const updateLocal = async () => {
+    let res = await dispatch(local(chainId, code, envData, [], gasLimit, gasPrice, true));
+    setLocalTx(res);
+  }
+
+  // Immediate update when basic values change
+  useEffect(() => {
+    updateLocal();
+  }, [network, networkId, chainId, gasLimit, gasPrice]);
+
+  // Wait for a few seconds after typing to send the local command.
+  useEffect(() => {
+    if (timer) {
+      clearInterval(timer);
+    }
+    timer = setInterval(() => { 
+      updateLocal();
+      clearInterval(timer);
+    }, 1500);
+    return () => {
+      clearInterval(timer);
+    }
+  }, [code, envData])
+
 
   const runCommand = () => {
     // console.log(gasLimit, gasPrice);
-    if (localOrSend === 'local') {
-      dispatch(local(chainId, code, envData, [], gasLimit, gasPrice));
-    }
-    else {
-      dispatch(signAndSend(chainId, code, envData, [], gasLimit, gasPrice));
-    }
+    // if (localOrSend === 'local') {
+    //   dispatch(local(chainId, code, envData, [], gasLimit, gasPrice));
+    // }
+    // else {
+    // }
+    dispatch(signAndSend(chainId, code, envData, [], gasLimit, gasPrice));
   }
 
 
@@ -249,6 +255,7 @@ export default function App() {
             <span className='text-2xl'>Env Data:</span>
             <div className='rounded-lg overflow-hidden'>
               <MonacoEditor
+                id="envData"
                 height="100px"
                 language="json"
                 value=''
@@ -271,22 +278,23 @@ export default function App() {
               <MonacoEditor
                 id="code"
                 height="250px"
-                language="clojure"
-                value='"Hello"'
+                language="pact"
+                value='(coin.get-balance "Hello")'
                 options={{
                   theme: 'vs-dark',
                 }}
                 onChange={pactEditorChanged}
-                // editorDidMount={pactEditorDidMount}
+                editorDidMount={pactEditorDidMount}
               />
             </div>
             <FlexRow className='space-x-2'>
-              <select id="localOrSend" className='flex-auto bg-black rounded-md border-white border-2 p-1' onChange={onInputChanged}>
+              <TxRender className='flex-1' txData={localTx}/>
+              {/* <select id="localOrSend" className='flex-auto bg-black rounded-md border-white border-2 p-1' onChange={onInputChanged}>
                 <option value="local">Local</option>
                 <option value="send">Send</option>
-              </select>
+              </select> */}
               <CustomButton
-                text="Run (Control + r)"
+                text="Send (Control + r)"
                 onClick={runCommand}  
               />
             </FlexRow>

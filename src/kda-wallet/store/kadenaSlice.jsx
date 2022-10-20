@@ -109,8 +109,12 @@ export const disconnectProvider = () => {
   }
 }
 
-export const local = (chainId, pactCode, envData, caps=[], gasLimit=15000, gasPrice=1e-5) => {
+export const local = (chainId, pactCode, envData, caps=[], gasLimit=15000, gasPrice=1e-5, dontUpdate=false) => {
   return async function(dispatch, getState) {
+    if (dontUpdate) {
+      return await localCommand(getState, chainId, pactCode, envData, gasLimit, gasPrice);
+    }
+    
     try {
       let res = await localCommand(getState, chainId, pactCode, envData, gasLimit, gasPrice);
       dispatch(kadenaSlice.actions.addTransaction(res));

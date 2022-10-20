@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 function TxRender(props) {
+  const containerClass = `bg-slate-900 rounded-md p-2 ${props.className}`;
 
   const createTxStructure = (txData) => {
     // console.log('txData');
@@ -18,7 +19,7 @@ function TxRender(props) {
     }
     
     return (
-      <div className="bg-slate-900 rounded-md p-2">
+      <div className={containerClass}>
         <span className="break-all">TX ID: {props.txData.reqKey}</span>
         <br></br>
         <span className="break-all">TX {txResult}: {data}</span>
@@ -29,7 +30,7 @@ function TxRender(props) {
   var structure
   if (typeof(props.txData) === 'string') {
     structure = (
-      <div className="bg-slate-900 rounded-md p-2">
+      <div className={containerClass}>
         <span>Error</span>
         <br></br>
         <span className="break-all">{props.txData}</span>
