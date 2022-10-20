@@ -62,14 +62,14 @@ export const {
 export default kadenaSlice.reducer;
 
 
-export const connectWithProvider = (providerName) => {
+export const connectWithProvider = (providerId) => {
   return async function(dispatch, getState) {
-    let provider = providers[providerName];
+    let provider = providers[providerId];
     let connectResult = await provider.connect(getState);
     // console.log(connectResult);
 
     if (connectResult.status === 'success') {
-      dispatch(kadenaSlice.actions.setProvider(providerName));
+      dispatch(kadenaSlice.actions.setProvider(providerId));
       dispatch(kadenaSlice.actions.setAccount(connectResult.account.account));
       dispatch(kadenaSlice.actions.setPubKey(connectResult.account.publicKey));
       dispatch(hideModal());
@@ -88,16 +88,21 @@ export const disconnectProvider = () => {
   return async function(dispatch, getState) {
     let provider = providers[getState().kadenaInfo.provider];
     let disconnectResult = await provider.disconnect(getState);
+    console.log(disconnectResult);
 
-    if (disconnectResult.status === 'success') {
+    if (disconnectResult.result.status === 'success') {
       dispatch(kadenaSlice.actions.setAccount(""));
       dispatch(kadenaSlice.actions.setProvider(""));
       dispatch(kadenaSlice.actions.setPubKey(""));
+      dispatch(kadenaSlice.actions.addMessage({
+        type: 'success',
+        data: `Disconnected from ${provider.name}`,
+      }));
     }
     else {
       dispatch(kadenaSlice.actions.addMessage({
         type: 'error',
-        data: `Error: ${connectResult.message}. Make sure you are on ${getState().kadenaInfo.networkId}`,
+        data: `Error: ${disconnectResult.message}. Make sure you are on ${getState().kadenaInfo.networkId}`,
       }));
       // toast.error(`Error: ${disconnectResult.message}\nMake sure you are on: ${getState().kadenaInfo.networkId}`);
     }

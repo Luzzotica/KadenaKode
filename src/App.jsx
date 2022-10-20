@@ -5,17 +5,14 @@ import 'react-toastify/dist/ReactToastify.css';
 import ConnectWalletModal from './kda-wallet/components/ConnectWalletModal';
 import FlexColumn from './components/FlexColumn';
 import FlexRow from './components/FlexRow';
-import Tile from './components/tiles/Tile';
-
 
 import MonacoEditor from '@uiw/react-monacoeditor';
 import CustomButton from './components/CustomButton';
-import { useRef } from 'react';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { local, setNetwork, setNetworkId, signAndSend } from './kda-wallet/store/kadenaSlice';
-import { txToastManager, messageToastManager } from './components/TxToastManager';
+import { txToastManager, messageToastManager, walletConnectedToastManager } from './components/TxToastManager';
 import TxRender from './components/TxRender';
 // import CodeMirror from '@uiw/react-codemirror';
 // import { StreamLanguage } from '@codemirror/language';
@@ -131,7 +128,7 @@ export default function App() {
   })
 
   useEffect(() => {
-    console.log(keysPressed);
+    // console.log(keysPressed);
     if (keysPressed.Control && keysPressed.r) {
       setKeysPressed({
         ...keysPressed,
@@ -143,8 +140,21 @@ export default function App() {
     }
   }, [keysPressed]);
 
+  //// Local Update Timer ////
+  // var timer
+  // const [time, setTime] = useState(Date.now());
+
+  // useEffect(() => {
+  //   timer = setInterval(() => { 
+  //     dispatch(local(chainId, code, envData, [], gasLimit, gasPrice));
+  //   }, 3000);
+  //   return () => {
+  //     clearInterval(timer);
+  //   }
+  // });
+
   const runCommand = () => {
-    console.log(gasLimit, gasPrice);
+    // console.log(gasLimit, gasPrice);
     if (localOrSend === 'local') {
       dispatch(local(chainId, code, envData, [], gasLimit, gasPrice));
     }
@@ -152,6 +162,8 @@ export default function App() {
       dispatch(signAndSend(chainId, code, envData, [], gasLimit, gasPrice));
     }
   }
+
+
 
   return (
     <div className="w-full flex flex-col items-center bg-slate-600">
@@ -170,6 +182,7 @@ export default function App() {
         <ConnectWalletModal 
           onNewTransaction={txToastManager}
           onNewMessage={messageToastManager}
+          onWalletConnected={walletConnectedToastManager}
           buttonStyle="`border-white border-2 rounded-md h-auto px-10 py-2 hover:border-purple-300 active:border-purple-700 focus:border-purple-500 transition duration-150 ease-out"
         />
         <Navbar />

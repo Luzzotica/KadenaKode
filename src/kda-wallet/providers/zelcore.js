@@ -1,3 +1,4 @@
+import Pact from 'pact-lang-api';
 
 export const ZELCORE = 'ZELCORE';
 const zelcore = {
@@ -37,8 +38,10 @@ const zelcore = {
   },
   disconnect: async function(state) {
     return {
-      status: 'success',
-      message: '',
+      result: {
+        status: 'success',
+        message: '',
+      }
     }
   },
   sign: async function(state, signingCommand) {

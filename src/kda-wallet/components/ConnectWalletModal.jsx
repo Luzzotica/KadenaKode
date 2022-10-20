@@ -9,6 +9,7 @@ function ConnectWalletModal(props) {
   const shouldShow = useSelector(state => state.connectWalletModal.showing);
   const newMessage = useSelector(state => state.kadenaInfo.newMessage);
   const newTransaction = useSelector(state => state.kadenaInfo.newTransaction);
+  const provider = useSelector(state => state.kadenaInfo.provider);
 
   const closeModal = () => {
     dispatch(hideModal());
@@ -33,6 +34,12 @@ function ConnectWalletModal(props) {
       props.onNewMessage(newMessage);
     }
   }, [newMessage]);
+
+  useEffect(() => {
+    if (props.onWalletConnected) {
+      props.onWalletConnected(provider);
+    }
+  }, [provider]);
 
   if (!shouldShow) {
     return null;

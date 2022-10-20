@@ -2,6 +2,13 @@ import { toast } from "react-toastify";
 import { NEW_TX } from "../kda-wallet/constants/constants";
 import TitleMessageRender from "./TitleMessageRender";
 
+export const walletConnectedToastManager = (provider) => {
+  console.log(provider);
+  if (provider && provider !== '') {
+    toast.success('Wallet connected');
+  }
+}
+
 export const messageToastManager = (message) => {
   if (message.type == 'error') {
     toast.error(message.data);
