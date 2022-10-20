@@ -151,7 +151,7 @@ export default function App() {
                 onChange={onInputChanged}
               >
                 <option value="testnet04">testnet04</option>
-                <option value="mainnet">mainnet01</option>
+                <option value="mainnet01">mainnet01</option>
               </select>
             </FlexColumn>
           </FlexRow>
