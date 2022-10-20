@@ -50,6 +50,8 @@ export default function App() {
   const [envData, setEnvData] = useState('');
   // const [caps, setCaps] = useState('');
   const [chainId, setChainId] = useState('1');
+  const [gasLimit, setGasLimit] = useState(15000);
+  const [gasPrice, setGasPrice] = useState(1e-5);
   const [localOrSend, setLocalOrSend] = useState('local');
 
   const pactEditorChanged = (value, event) => {
@@ -64,15 +66,20 @@ export default function App() {
 
   const onInputChanged = (value) => {
     let id = value.target.id;
-    console.log(id);
     if (id === 'chainId') {
-      setChainId(value.nativeEvent.data);
+      setChainId(value.target.data);
     }
     else if (id === 'network') {
       dispatch(setNetwork(value.target.value));
     }
     else if (id === 'networkId') {
       dispatch(setNetworkId(value.target.value));
+    }
+    else if (id === 'gasLimit') {
+      setGasLimit(Number(value.target.value));
+    }
+    else if (id === 'gasPrice') {
+      setGasPrice(Number(value.target.value));
     }
     else if (id === 'localOrSend') {
       setLocalOrSend(value.target.value);
@@ -132,11 +139,12 @@ export default function App() {
   }, [keysPressed]);
 
   const runCommand = () => {
+    console.log(gasLimit, gasPrice);
     if (localOrSend === 'local') {
-      dispatch(local(chainId, code, envData));
+      dispatch(local(chainId, code, envData, [], gasLimit, gasPrice));
     }
     else {
-      dispatch(signAndSend(chainId, code, envData));
+      dispatch(signAndSend(chainId, code, envData, [], gasLimit, gasPrice));
     }
   }
 
@@ -193,6 +201,26 @@ export default function App() {
                 <option value="testnet04">testnet04</option>
                 <option value="mainnet01">mainnet01</option>
               </select>
+            </FlexColumn>
+          </FlexRow>
+          <FlexRow className='h-auto text-left gap-2'>
+            <FlexColumn className='flex-1'>
+              <span>Gas Limit:</span>
+              <input 
+                id="gasLimit"
+                type="number"
+                defaultValue="15000"
+                className='flex-auto bg-black rounded-md border-white border-2 p-1'
+                onChange={onInputChanged}/>
+            </FlexColumn>
+            <FlexColumn className='flex-1'>
+              <span>Gas Price:</span>
+              <input 
+                id="gasPrice"
+                // type="number"
+                defaultValue="1e-5"
+                className='flex-auto bg-black rounded-md border-white border-2 p-1'
+                onChange={onInputChanged}/>
             </FlexColumn>
           </FlexRow>
           <FlexRow className='h-auto text-left space-x-2'>
