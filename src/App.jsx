@@ -121,7 +121,7 @@ export default function App() {
         />
         <Navbar />
         <FlexColumn className='p-2 space-y-4'>
-          <FlexRow className='h-16 text-left space-x-2'>
+          <FlexRow className='h-auto text-left gap-2'>
             <FlexColumn className='flex-1'>
               <span>Chain ID:</span>
               <input 

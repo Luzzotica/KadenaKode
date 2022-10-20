@@ -24,21 +24,21 @@ function Navbar() {
   }
 
   return (
-    <nav className="w-full flex flex-row justify-between place-items-center p-2 h-40">
+    <nav className="w-full flex flex-row space-x-2 justify-between place-items-center p-2 h-40">
       <div className="h-28">
         <KadenaKodeLogo
           width="100%"
           height="100%"/>
       </div>
-      <FlexRow className="space-x-2">
+      <FlexRow className="gap-2">
         <CustomButton
+          className='flex-1 sm:flex-none'
           text='Github'
           onClick={goToGithub} />
-        <div className="flex flex-col justify-between place-items-center space-y-2">
-          <CustomButton
-            text={account === '' ? "Connect Wallet" : "Disconnect"}
-            onClick={account === '' ? openModal : disconnect} />
-        </div>
+        <CustomButton
+          className='flex-1 sm:flex-none'
+          text={account === '' ? "Connect Wallet" : "Disconnect"}
+          onClick={account === '' ? openModal : disconnect} />
       </FlexRow>
       
     </nav>
