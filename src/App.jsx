@@ -131,8 +131,13 @@ export default function App() {
   })
 
   useEffect(() => {
-    // console.log(keysPressed);
+    console.log(keysPressed);
     if (keysPressed.Control && keysPressed.r) {
+      setKeysPressed({
+        ...keysPressed,
+        'Control': false,
+        'r': false,
+      })
       // console.log('running');
       runCommand();
     }
