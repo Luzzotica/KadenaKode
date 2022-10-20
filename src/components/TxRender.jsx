@@ -1,6 +1,31 @@
 import { useState } from "react";
 
 function TxRender(props) {
+
+  const createTxStructure = (txData) => {
+    // console.log('txData');
+    // console.log(txData);
+    var res, txResult, data;
+    // If the tx result is empty, we are listening
+    if (typeof(txData.result) === 'undefined') {
+      txResult = 'Result';
+      data = 'Listening...';
+    }
+    else { // Otherwise, load the data in
+      res = txData.result;
+      txResult = res.status === 'success' ? 'Result' : 'Error';
+      data = res.status === 'success' ? JSON.stringify(res.data) : JSON.stringify(res.error);
+    }
+    
+    return (
+      <div className="bg-slate-900 rounded-md p-2">
+        <span className="break-all">TX ID: {props.txData.reqKey}</span>
+        <br></br>
+        <span className="break-all">TX {txResult}: {data}</span>
+      </div>
+    )
+  }
+
   var structure
   if (typeof(props.txData) === 'string') {
     structure = (
@@ -12,31 +37,19 @@ function TxRender(props) {
     );
   }
   else if ('listenPromise' in props.txData) {
-    const [result, setResult] = useState({});
+    const [txData, setTxData] = useState(props.txData);
 
     const updateOnReturn = async () => {
       let res = await props.txData.listenPromise;
       // console.log(res);
-      setResult(res);
+      setTxData(res);
     }
     updateOnReturn();
 
-    structure = (
-      <div className="bg-slate-900 rounded-md p-2">
-        <span><b className="text-green-300">TX ID:</b> {props.txData.reqKey}</span>
-        <br></br>
-        <span className="break-all"><b className="text-green-300">TX Result:</b> {Object.keys(result).length === 0 ? `Listening...` : JSON.stringify(result)}</span>
-      </div>
-    );
+    structure = createTxStructure(txData);
   }
   else {
-    structure = (
-      <div className="bg-slate-900 rounded-md p-2">
-        <span>TX ID: {props.txData.reqKey}</span>
-        <br></br>
-        <span className="break-all">TX Result: {JSON.stringify(props.txData.result.data)}</span>
-      </div>
-    )
+    structure = createTxStructure(props.txData);
   }
 
   return structure;

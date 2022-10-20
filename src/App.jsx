@@ -23,7 +23,6 @@ import TxRender from './components/TxRender';
 // import { dracula } from '@uiw/codemirror-theme-dracula';
 // import CustomButton from './components/CustomButton';
 
-
 export default function App() {
   const dispatch = useDispatch();
   const network = useSelector(state => state.kadenaInfo.network);
@@ -85,11 +84,52 @@ export default function App() {
     // console.log(transactions.length);
     let renders = [];
     for (var i = transactions.length - 1; i >= 0; i--) {
-      console.log(transactions[i]);
+      // console.log(transactions[i]);
       renders.push(<TxRender key={i} txData={transactions[i]}/>);
     }
     setTxRenders(renders);
   }, [transactions]);
+
+  const [keysPressed, setKeysPressed] = useState({
+    'Control': false,
+    'Meta': false,
+    'r': false,
+  });
+
+  useEffect(() => {
+    const keyDownHandler = event => {
+      // console.log('pressed', event.key);
+      let key = event.key;
+      setKeysPressed({
+        ...keysPressed,
+        [key]: true,
+      })
+    }
+    const keyUpHandler = event => {
+      // console.log('unpressed', event.key);
+      let key = event.key;
+      setKeysPressed({
+        ...keysPressed,
+        [key]: false,
+      })
+    }
+
+    document.addEventListener('keydown', keyDownHandler);
+    document.addEventListener('keyup', keyUpHandler);
+
+    return () => {
+      document.removeEventListener('keydown', keyDownHandler);
+      document.removeEventListener('keyup', keyUpHandler);
+    }
+  })
+
+  useEffect(() => {
+    // console.log(keysPressed);
+    if (keysPressed.Control && keysPressed.r) {
+      // console.log('running');
+      runCommand();
+    }
+  }, [keysPressed]);
 
   const runCommand = () => {
     if (localOrSend === 'local') {
@@ -200,7 +240,7 @@ export default function App() {
                 <option value="send">Send</option>
               </select>
               <CustomButton
-                text="Run"
+                text="Run (Control + r)"
                 onClick={runCommand}  
               />
             </FlexRow>
