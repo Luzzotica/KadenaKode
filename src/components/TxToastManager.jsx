@@ -19,11 +19,11 @@ export const txToastManager = async (txData) => {
   }
 
   if ('listenPromise' in txData) {
-    const id = toast.loading(<TitleMessageRender title={`Waiting...`} message={`TX ID: ${reqKey}`}/>, { type: toast.TYPE.INFO });
+    toast.success(<TitleMessageRender title={`Transaction Sent!`} message={`TX ID: ${txData.reqKey}`}/>, { type: toast.TYPE.INFO });
     let result = await txData.listenPromise;
 
     if (result.status === "success") {
-      toast.update(id, { render: <TitleMessageRender title={`Success`} message={`${reqKey}`}/>, type: toast.TYPE.SUCCESS, isLoading: false, autoClose: 5000 });
+      toast.update(id, { render: <TitleMessageRender title={`Success`} message={`${txData.reqKey}`}/>, type: toast.TYPE.SUCCESS, isLoading: false, autoClose: 5000 });
     }
     else {
       toast.update(id, { render: <TitleMessageRender title="Error" message={`${result.result.error.message}`}/>, type: toast.TYPE.ERROR, isLoading: false, autoClose: 5000 });

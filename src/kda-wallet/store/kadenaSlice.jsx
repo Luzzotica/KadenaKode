@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import TitleMessageRender from '../../components/TitleMessageRender';
+import providers from '../providers/providers';
 import { createSigningCommand, listen, localCommand, sendCommand } from '../utils/utils';
 import { hideModal } from './modalSlice';
 
@@ -9,7 +10,7 @@ export const kadenaSlice = createSlice({
     network: 'https://api.testnet.chainweb.com',
     networkId: 'testnet04',
     ttl: 600,
-    provider: {},
+    provider: '',
     account: '',
     pubKey: '',
     transactions: [],
@@ -61,13 +62,14 @@ export const {
 export default kadenaSlice.reducer;
 
 
-export const connectWithProvider = (provider) => {
+export const connectWithProvider = (providerName) => {
   return async function(dispatch, getState) {
+    let provider = providers[providerName];
     let connectResult = await provider.connect(getState);
-    console.log(connectResult);
+    // console.log(connectResult);
 
     if (connectResult.status === 'success') {
-      dispatch(kadenaSlice.actions.setProvider(provider));
+      dispatch(kadenaSlice.actions.setProvider(providerName));
       dispatch(kadenaSlice.actions.setAccount(connectResult.account.account));
       dispatch(kadenaSlice.actions.setPubKey(connectResult.account.publicKey));
       dispatch(hideModal());
@@ -84,12 +86,12 @@ export const connectWithProvider = (provider) => {
 
 export const disconnectProvider = () => {
   return async function(dispatch, getState) {
-    let provider = getState().kadenaInfo.provider;
+    let provider = providers[getState().kadenaInfo.provider];
     let disconnectResult = await provider.disconnect(getState);
 
     if (disconnectResult.status === 'success') {
       dispatch(kadenaSlice.actions.setAccount(""));
-      dispatch(kadenaSlice.actions.setAccount(""));
+      dispatch(kadenaSlice.actions.setProvider(""));
       dispatch(kadenaSlice.actions.setPubKey(""));
     }
     else {
@@ -121,7 +123,7 @@ export const signAndSend = (chainId, pactCode, envData,
   caps=[], gasLimit=15000, gasPrice=1e-5) => {
   return async function sign(dispatch, getState) {
     try {
-      let provider = getState().kadenaInfo.provider;
+      let provider = providers[getState().kadenaInfo.provider];
       let signingCmd = createSigningCommand(
         getState, 
         chainId, 
@@ -133,24 +135,25 @@ export const signAndSend = (chainId, pactCode, envData,
       );
       // console.log(signingCmd);
       let signedCmd = await provider.sign(getState, signingCmd);
+      // console.log('signingCmd');
       // console.log(signedCmd);
       let res = await sendCommand(getState, chainId, signedCmd);
       // console.log(res);
 
       let reqKey = res.requestKeys[0];
-      let reqListen = listen(getState, reqKey);
+      let reqListen = listen(getState, chainId, reqKey);
       let txData = {
-        ...res,
+        reqKey: reqKey,
         listenPromise: reqListen,
       };
-      console.log("tx data");
-      console.log(txData);
+      // console.log("tx data");
+      // console.log(txData);
       dispatch(kadenaSlice.actions.addTransaction(txData));
     }
     catch (e) {
       dispatch(kadenaSlice.actions.addMessage({
         type: 'error',
-        data: 'Failed to sign command',
+        data: `Failed to sign command: ${e}`,
       }));
       // toast.error('Failed to sign command');
     }

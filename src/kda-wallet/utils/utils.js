@@ -54,7 +54,6 @@ export const createSigningCommand = (getState, chainId, pactCode, envData, caps=
 export const sendCommand = async function(getState, chainId, signedCmd) {
   let kadenaInfo = getState().kadenaInfo;
   let networkUrl = buildUrl(kadenaInfo.network, kadenaInfo.networkId, chainId);
-  
   return await Pact.wallet.sendSigned(signedCmd, networkUrl);
 }
 

@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import xwallet from "../providers/xwallet";
-import zelcore from "../providers/zelcore";
+import { X_WALLET, ZELCORE } from "../providers/providers";
 import { connectWithProvider } from "../store/kadenaSlice";
 import { hideModal } from "../store/modalSlice";
 
@@ -16,11 +15,11 @@ function ConnectWalletModal(props) {
   }
 
   const connectXWalletClicked = () => {
-    dispatch(connectWithProvider(xwallet));
+    dispatch(connectWithProvider(X_WALLET));
   }
 
   const connectZelcoreClicked = () => {
-    dispatch(connectWithProvider(zelcore));
+    dispatch(connectWithProvider(ZELCORE));
   }
 
   useEffect(() => {

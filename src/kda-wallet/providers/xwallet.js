@@ -22,12 +22,13 @@ const xwallet = {
       networkId: networkId,
       data: {
           networkId: networkId,
-          signingCmd: signingCmd
+          signingCmd: signingCommand
       }
     }
     var cmd = await kadena.request(req);
+    console.log(cmd);
     
-    return cmd.signingCmd;
+    return cmd.signedCmd;
   }
 }
 export default xwallet;

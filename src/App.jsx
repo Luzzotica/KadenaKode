@@ -79,21 +79,13 @@ export default function App() {
     }
   }
 
-  // useEffect(() => {
-  //   dispatch(setNetworkInfo({
-  //     chainId: chainId,
-  //     networkId: networkId,
-  //     networkRoot: network,
-  //   }));
-  // }, [chainId, network, networkId]);
-
   useEffect(() => {
     console.log('txs updated');
     console.log(transactions.length);
     let renders = [];
     for (var i = transactions.length - 1; i >= 0; i--) {
       console.log(transactions[i]);
-      renders.push(<TxRender txData={transactions[i]}/>);
+      renders.push(<TxRender key={i} txData={transactions[i]}/>);
     }
     setTxRenders(renders);
   }, [transactions]);
@@ -209,7 +201,8 @@ export default function App() {
           </FlexColumn>
           <FlexColumn className='text-left space-y-2'>
             <span className='text-2xl'>Transactions:</span>
-            {txRenders}
+            {txRenders.length === 0 ? <span>None</span> : txRenders}
+          <div className='h-40'/>
           </FlexColumn>
           {/* <FlexColumn className='text-left space-y-2'>
             <span className='text-2xl'>Caps</span>
