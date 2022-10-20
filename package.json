@@ -1,8 +1,8 @@
 {
-  "name": "react-typescript",
+  "name": "kadena-kode",
   "version": "1.0.0",
   "type": "module",
-  "description": "React TypeScript on Replit, using Vite bundler",
+  "description": "",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -45,6 +45,7 @@
     "react-toastify": "^9.0.8",
     "redux": "^4.2.0",
     "redux-devtools-extension": "^2.13.9",
-    "redux-thunk": "^2.4.1"
+    "redux-thunk": "^2.4.1",
+    "vite-plugin-svgr": "^2.2.2"
   }
 }

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { KadenaKodeLogo } from '../assets';
 import { disconnectProvider } from '../kda-wallet/store/kadenaSlice';
 import { showModal } from '../kda-wallet/store/modalSlice';
 import reduceToken from '../kda-wallet/utils/reduceToken';
@@ -24,10 +25,10 @@ function Navbar() {
 
   return (
     <nav className="w-full flex flex-row justify-between place-items-center p-2 h-40">
-      <div className="relative">
-        <span className="text-7xl font-medium">
-          KadenaKode
-        </span>
+      <div className="h-28">
+        <KadenaKodeLogo
+          width="100%"
+          height="100%"/>
       </div>
       <FlexRow className="space-x-2">
         <CustomButton
@@ -37,7 +38,6 @@ function Navbar() {
           <CustomButton
             text={account === '' ? "Connect Wallet" : "Disconnect"}
             onClick={account === '' ? openModal : disconnect} />
-          {account !== '' && <span>{reduceToken(account)}</span>}
         </div>
       </FlexRow>
       

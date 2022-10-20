@@ -29,6 +29,7 @@ export default function App() {
   const network = useSelector(state => state.kadenaInfo.network);
   const networkId = useSelector(state => state.kadenaInfo.networkId);
   const transactions = useSelector(state => state.kadenaInfo.transactions);
+  const account = useSelector(state => state.kadenaInfo.account);
 
   // let pactEditorRef = useRef(null);
   // let envDataRef = useRef(null);
@@ -80,8 +81,8 @@ export default function App() {
   }
 
   useEffect(() => {
-    console.log('txs updated');
-    console.log(transactions.length);
+    // console.log('txs updated');
+    // console.log(transactions.length);
     let renders = [];
     for (var i = transactions.length - 1; i >= 0; i--) {
       console.log(transactions[i]);
@@ -116,6 +117,7 @@ export default function App() {
         <ConnectWalletModal 
           onNewTransaction={txToastManager}
           onNewMessage={messageToastManager}
+          buttonStyle="`border-white border-2 rounded-md h-auto px-10 py-2 hover:border-purple-300 active:border-purple-700 focus:border-purple-500 transition duration-150 ease-out"
         />
         <Navbar />
         <FlexColumn className='p-2 space-y-4'>
@@ -152,6 +154,10 @@ export default function App() {
                 <option value="mainnet">mainnet</option>
               </select>
             </FlexColumn>
+          </FlexRow>
+          <FlexRow className='h-auto text-left space-x-2'>
+            <span>Account:</span>
+            <span>{account}</span>
           </FlexRow>
           <FlexColumn className='text-left space-y-2'>
             <span className='text-2xl'>Env Data:</span>
