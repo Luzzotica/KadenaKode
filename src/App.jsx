@@ -289,10 +289,6 @@ export default function App() {
             </div>
             <FlexRow className='space-x-2'>
               <TxRender className='flex-1' txData={localTx}/>
-              {/* <select id="localOrSend" className='flex-auto bg-black rounded-md border-white border-2 p-1' onChange={onInputChanged}>
-                <option value="local">Local</option>
-                <option value="send">Send</option>
-              </select> */}
               <CustomButton
                 text="Send (Control + r)"
                 onClick={runCommand}  
