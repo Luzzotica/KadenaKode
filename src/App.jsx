@@ -15,6 +15,8 @@ import TxRender from './components/TxRender';
 import pactLanguageSpec from './constants/pactLanguageSpec';
 
 export default function App() {
+  console.log('ENV: ', import.meta.env.VITE_TEST);
+
   const dispatch = useDispatch();
   const network = useSelector(state => state.kadenaInfo.network);
   const networkId = useSelector(state => state.kadenaInfo.networkId);
