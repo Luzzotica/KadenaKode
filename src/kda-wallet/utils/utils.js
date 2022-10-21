@@ -57,13 +57,26 @@ export const sendCommand = async function(getState, chainId, signedCmd) {
   return await Pact.wallet.sendSigned(signedCmd, networkUrl);
 }
 
-export const localCommand = async function (getState, chainId, pactCode, envData, gasLimit, gasPrice) {
+export const localCommand = async function (getState, chainId, pactCode, envData, caps, gasLimit, gasPrice) {
   let kadenaInfo = getState().kadenaInfo;
   let networkUrl = buildUrl(kadenaInfo.network, kadenaInfo.networkId, chainId);
+  let publicKey = kadenaInfo.pubKey;
+  let keyPairs = [];
+  // console.log(publicKey);
+  // if (publicKey) {
+  //   let data = {
+  //     publicKey: publicKey
+  //   }
+  //   if (caps.length > 0) {
+  //     data.clist = caps.map(capDesc => capDesc.cap);
+  //   }
+  //   keyPairs.push(data);
+  // }
+  // console.log('utils.keypairs');
+  // console.log(keyPairs);
+
   let cmd = {
-    keyPairs: [
-      // No key pairs for no sigs
-    ],
+    keyPairs: keyPairs,
     pactCode: pactCode,
     envData: envData,
     nonce: creationTime(),

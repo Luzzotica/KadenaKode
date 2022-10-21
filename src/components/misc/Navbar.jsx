@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { KadenaKodeLogo } from '../assets';
-import { disconnectProvider } from '../kda-wallet/store/kadenaSlice';
-import { showModal } from '../kda-wallet/store/modalSlice';
-import reduceToken from '../kda-wallet/utils/reduceToken';
-import CustomButton from './CustomButton'
-import FlexRow from './FlexRow';
+import { KadenaKodeLogo } from '../../assets';
+import { disconnectProvider } from '../../kda-wallet/store/kadenaSlice';
+import { showModal } from '../../kda-wallet/store/modalSlice';
+import reduceToken from '../../kda-wallet/utils/reduceToken';
+import CustomButton from '../layout/CustomButton'
+import FlexRow from '../layout/FlexRow';
 
 function Navbar() {
   const account = useSelector(state => state.kadenaInfo.account);

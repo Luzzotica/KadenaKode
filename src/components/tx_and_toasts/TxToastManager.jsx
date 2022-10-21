@@ -1,5 +1,4 @@
 import { toast } from "react-toastify";
-import { NEW_TX } from "../kda-wallet/constants/constants";
 import TitleMessageRender from "./TitleMessageRender";
 
 export const walletConnectedToastManager = (provider) => {

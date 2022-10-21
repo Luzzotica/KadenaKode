@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import TitleMessageRender from '../../components/TitleMessageRender';
+import TitleMessageRender from '../../components/tx_and_toasts/TitleMessageRender';
 import providers from '../providers/providers';
 import { createSigningCommand, listen, localCommand, sendCommand } from '../utils/utils';
 import { hideModal } from './modalSlice';
@@ -66,9 +66,10 @@ export const connectWithProvider = (providerId) => {
   return async function(dispatch, getState) {
     let provider = providers[providerId];
     let connectResult = await provider.connect(getState);
-    // console.log(connectResult);
+    console.log(connectResult);
 
     if (connectResult.status === 'success') {
+      
       dispatch(kadenaSlice.actions.setProvider(providerId));
       dispatch(kadenaSlice.actions.setAccount(connectResult.account.account));
       dispatch(kadenaSlice.actions.setPubKey(connectResult.account.publicKey));
@@ -112,11 +113,11 @@ export const disconnectProvider = () => {
 export const local = (chainId, pactCode, envData, caps=[], gasLimit=15000, gasPrice=1e-5, dontUpdate=false) => {
   return async function(dispatch, getState) {
     if (dontUpdate) {
-      return await localCommand(getState, chainId, pactCode, envData, gasLimit, gasPrice);
+      return await localCommand(getState, chainId, pactCode, envData, caps, gasLimit, gasPrice);
     }
     
     try {
-      let res = await localCommand(getState, chainId, pactCode, envData, gasLimit, gasPrice);
+      let res = await localCommand(getState, chainId, pactCode, envData, caps, gasLimit, gasPrice);
       dispatch(kadenaSlice.actions.addTransaction(res));
     }
     catch (e) {
@@ -131,8 +132,18 @@ export const local = (chainId, pactCode, envData, caps=[], gasLimit=15000, gasPr
 export const signAndSend = (chainId, pactCode, envData, 
   caps=[], gasLimit=15000, gasPrice=1e-5) => {
   return async function sign(dispatch, getState) {
+    
     try {
-      let provider = providers[getState().kadenaInfo.provider];
+      let providerName = getState().kadenaInfo.provider;
+      if (providerName === '') {
+        dispatch(kadenaSlice.actions.addMessage({
+          type: 'error',
+          data: `No wallet connected`,
+        }));
+        return;
+      }
+
+      let provider = providers[providerName];
       let signingCmd = createSigningCommand(
         getState, 
         chainId, 
