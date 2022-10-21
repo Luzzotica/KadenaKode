@@ -15,8 +15,6 @@ import TxRender from './components/TxRender';
 import pactLanguageSpec from './constants/pactLanguageSpec';
 
 export default function App() {
-  console.log('ENV: ', import.meta.env.VITE_TEST);
-
   const dispatch = useDispatch();
   const network = useSelector(state => state.kadenaInfo.network);
   const networkId = useSelector(state => state.kadenaInfo.networkId);
@@ -55,7 +53,7 @@ export default function App() {
   const onInputChanged = (value) => {
     let id = value.target.id;
     if (id === 'chainId') {
-      setChainId(value.target.data);
+      setChainId(value.target.value);
     }
     else if (id === 'network') {
       dispatch(setNetwork(value.target.value));
