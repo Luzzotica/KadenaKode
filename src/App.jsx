@@ -5,14 +5,15 @@ import 'react-toastify/dist/ReactToastify.css';
 import ConnectWalletModal from './kda-wallet/components/ConnectWalletModal';
 import FlexColumn from './components/FlexColumn';
 import FlexRow from './components/FlexRow';
-import MonacoEditor from '@uiw/react-monacoeditor';
+// import MonacoEditor from '@uiw/react-monacoeditor';
 import CustomButton from './components/CustomButton';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { local, setNetwork, setNetworkId, signAndSend } from './kda-wallet/store/kadenaSlice';
 import { txToastManager, messageToastManager, walletConnectedToastManager } from './components/TxToastManager';
 import TxRender from './components/TxRender';
 import pactLanguageSpec from './constants/pactLanguageSpec';
+import Editor from "@monaco-editor/react";
 
 export default function App() {
   const dispatch = useDispatch();
@@ -22,7 +23,12 @@ export default function App() {
   const account = useSelector(state => state.kadenaInfo.account);
 
   // Setup the pact editor and language
+  const editorRef = useRef(null);
   const pactEditorDidMount = (editor, monaco) => {
+    monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+      noSemanticValidation: true,
+      noSyntaxValidation: true,
+    });
     monaco.languages.register({
         id: 'pact'
     });
@@ -45,6 +51,9 @@ export default function App() {
   }
   const envDataEditorChanged = (value, event) => {
     setEnvData(JSON.parse(value));
+  }
+  const envDataErrors = (markers) => {
+    markers.forEach(marker => console.log('onValidate:', marker.message));
   }
   // const capsEditorChanged = (value, event) => {
   //   setCaps(value);
@@ -254,28 +263,42 @@ export default function App() {
           <FlexColumn className='text-left space-y-2'>
             <span className='text-2xl'>Env Data:</span>
             <div className='rounded-lg overflow-hidden'>
-              <MonacoEditor
-                id="envData"
+              {/* <MonacoEditor
+                ref={editorRef}
                 height="100px"
                 language="json"
-                value=''
                 options={{
                   theme: 'vs-dark',
+                  selectOnLineNumbers: true,
+                  roundedSelection: false,
+                  cursorStyle: 'line',
+                  automaticLayout: false,
                 }}
                 onChange={envDataEditorChanged}
                 // editorDidMount={envDataEditorDidMount}
+              /> */}
+              <Editor
+                height="100px"
+                defaultLanguage="json"
+                defaultValue=""
+                theme='vs-dark'
+                onChange={envDataEditorChanged}
+                onValidate={envDataErrors}
               />
             </div>
           </FlexColumn>
           <FlexColumn className='h-auto text-left space-y-2'>
             <span className='text-2xl'>Code:</span>
             <div className='rounded-lg overflow-hidden'>
-              {/* <CodeMirror
-                // 
-                value='(defun hello:string (input:string) (format "Hello {}!" [input]))'
-
-              /> */}
-              <MonacoEditor
+              <Editor
+                height="250px"
+                defaultLanguage="pact"
+                defaultValue=""
+                theme='vs-dark'
+                onMount={pactEditorDidMount}
+                onChange={pactEditorChanged}
+              />
+              {/* <MonacoEditor
                 id="code"
                 height="250px"
                 language="pact"
@@ -285,7 +308,7 @@ export default function App() {
                 }}
                 onChange={pactEditorChanged}
                 editorDidMount={pactEditorDidMount}
-              />
+              /> */}
             </div>
             <FlexRow className='space-x-2'>
               <TxRender className='flex-1' txData={localTx}/>
