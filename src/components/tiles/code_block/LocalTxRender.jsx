@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { local } from "../../../kda-wallet/store/kadenaSlice";
+import CustomButton from "../../layout/CustomButton";
+import FlexRow from "../../layout/FlexRow";
 import TxRender from "../../tx_and_toasts/TxRender";
 
 function LocalTxRender(props) {
@@ -20,9 +22,18 @@ function LocalTxRender(props) {
 
   const updateLocal = async () => {
     let capsList = Object.values(caps);
-    console.log(capsList);
+    // console.log(capsList);
     let res = await dispatch(local(chainId, code, envData, capsList, gasLimit, gasPrice, true));
     setLocalTx(res);
+  }
+
+  const updateLocalSign = async () => {
+    let capsList = Object.values(caps);
+    // console.log(capsList);
+    let res = await dispatch(local(chainId, code, envData, capsList, gasLimit, gasPrice, true, true));
+    if (res) {
+      setLocalTx(res);
+    }
   }
 
   // Immediate update when basic values change
@@ -45,7 +56,13 @@ function LocalTxRender(props) {
   }, [code, envData, caps])
 
   return (
-    <TxRender className={props.className} txData={localTx}/>
+    <FlexRow className={`gap-2 ${props.className}`}>
+      <TxRender className='flex-auto' txData={localTx}/>
+      <CustomButton
+        text="Sign Local"
+        onClick={updateLocalSign}/>
+    </FlexRow>
+    
   )
 }
 
