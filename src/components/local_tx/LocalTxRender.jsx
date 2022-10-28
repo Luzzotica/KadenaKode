@@ -49,6 +49,7 @@ function LocalTxRender(props) {
         chainId => <TxRender 
           key={chainId} 
           className='flex-auto' 
+          chainId={chainId}
           txData={localTxs[chainId]}/>
       )
     );

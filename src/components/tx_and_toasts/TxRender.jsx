@@ -20,6 +20,7 @@ function TxRender(props) {
     
     return (
       <div className={containerClass}>
+        {props.chainId ? <span className="break-all">Chaind ID: {props.chainId}<br/></span> : <div/>}
         <span className="break-all">TX ID: {props.txData.reqKey}</span>
         <br></br>
         <span className="break-all">TX {txResult}: {data}</span>
@@ -31,8 +32,9 @@ function TxRender(props) {
   if (typeof(props.txData) === 'string') {
     structure = (
       <div className={containerClass}>
+        {props.chainId ? <span className="break-all">Chain ID: {props.chainId}<br/></span> : <div/>}
         <span>Error</span>
-        <br></br>
+        <br/>
         <span className="break-all">{props.txData}</span>
       </div>
     );
