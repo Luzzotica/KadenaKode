@@ -80,7 +80,7 @@ export const sendCommand = async function(getState, chainId, signedCmd) {
 export const localCommand = async function (getState, chainId, cmd) {
   let kadenaInfo = getState().kadenaInfo;
   let networkUrl = buildUrl(kadenaInfo.network, kadenaInfo.networkId, chainId);
-  console.log(networkUrl);
+  // console.log(networkUrl);
   let res = await fetch(`${networkUrl}/api/v1/local`, {
     headers: {
       "Content-Type": "application/json"

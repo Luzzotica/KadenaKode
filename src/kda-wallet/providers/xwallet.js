@@ -26,7 +26,7 @@ const xwallet = {
       }
     }
     var cmd = await kadena.request(req);
-    console.log(cmd);
+    // console.log(cmd);
     
     return cmd.signedCmd;
   }

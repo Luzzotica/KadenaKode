@@ -2,17 +2,19 @@ import Editor from "@monaco-editor/react";
 import { useDispatch, useSelector } from "react-redux";
 import pactLanguageSpec from "../../../constants/pactLanguageSpec";
 import FlexRow from "../../layout/FlexRow";
-import RunCodeButton from "./RunCodeButton";
-import LocalTxRender from "./LocalTxRender";
+import HotkeyButton from "../../hotkey_button/HotkeyButton";
+import LocalTxRender from "../../local_tx/LocalTxRender";
 import Tile from "../Tile";
 import { setCode } from "../../../store/metaSlice";
 import { signAndSend } from "../../../kda-wallet/store/kadenaSlice";
+import FlexColumn from "../../layout/FlexColumn";
+import { updateLocal } from "../../local_tx/localTxSlice";
 
 function CodeBlock(props) {
   const dispatch = useDispatch();
   const code = useSelector(state => state.metaInfo.code);
   const envData = useSelector(state => state.metaInfo.envData);
-  const chainId = useSelector(state => state.metaInfo.chainId);
+  const chainIds = useSelector(state => state.metaInfo.chainId);
   const caps = useSelector(state => state.metaInfo.caps);
   const gasLimit = useSelector(state => state.metaInfo.gasLimit);
   const gasPrice = useSelector(state => state.metaInfo.gasPrice);
@@ -32,8 +34,14 @@ function CodeBlock(props) {
 
   const runCommand = () => {
     let capsList = Object.values(caps);
-    console.log(capsList);
-    dispatch(signAndSend(chainId, code, envData, capsList, gasLimit, gasPrice));
+    // console.log(capsList);
+    for (var chainId of chainIds) {
+      dispatch(signAndSend(chainId, code, envData, capsList, gasLimit, gasPrice));
+    }
+  }
+
+  const updateLocalSign = async () => {
+    updateLocal(true);
   }
 
   return (
@@ -51,10 +59,21 @@ function CodeBlock(props) {
           onChange={pactEditorChanged}
         />
       </div>
-      <FlexRow className='gap-2'>
+      <FlexColumn className='gap-2'>
         <LocalTxRender className='flex-1'/>
-        <RunCodeButton onClick={runCommand}/>
-      </FlexRow>
+        <FlexRow className='gap-2'>
+          <HotkeyButton
+            className='flex-auto'
+            text="Sign Local"
+            hotkeys={['Control', 't']}
+            onClick={updateLocalSign}/>
+          <HotkeyButton 
+            className='flex-auto'
+            text="Send"
+            hotkeys={['Control', 'r']}
+            onClick={runCommand}/>
+        </FlexRow>
+      </FlexColumn>
     </Tile>
   )
 }

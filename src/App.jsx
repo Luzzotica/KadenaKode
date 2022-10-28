@@ -12,6 +12,7 @@ import CodeBlock from './components/tiles/code_block/CodeBlock';
 import MetaInput from './components/tiles/MetaInput';
 import Transactions from './components/tiles/Transactions';
 import { useSelector } from 'react-redux';
+import KeySensor from './components/hotkey_button/KeySensor';
 
 export default function App() {
   const account = useSelector(state => state.kadenaInfo.account);
@@ -30,6 +31,7 @@ export default function App() {
           draggable
           pauseOnHover
         />
+        <KeySensor/>
         <ConnectWalletModal 
           onNewTransaction={txToastManager}
           onNewMessage={messageToastManager}

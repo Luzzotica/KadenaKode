@@ -66,7 +66,7 @@ export const connectWithProvider = (providerId) => {
   return async function(dispatch, getState) {
     let provider = providers[providerId];
     let connectResult = await provider.connect(getState);
-    console.log(connectResult);
+    // console.log(connectResult);
 
     if (connectResult.status === 'success') {
       
@@ -89,7 +89,7 @@ export const disconnectProvider = () => {
   return async function(dispatch, getState) {
     let provider = providers[getState().kadenaInfo.provider];
     let disconnectResult = await provider.disconnect(getState);
-    console.log(disconnectResult);
+    // console.log(disconnectResult);
 
     if (disconnectResult.result.status === 'success') {
       dispatch(kadenaSlice.actions.setAccount(""));
@@ -122,7 +122,7 @@ export const local = (chainId, pactCode, envData, caps=[], gasLimit=15000, gasPr
         }));
         return;
       }
-      console.log('got here?');
+      // console.log('got here?');
       
       let provider = providers[providerName];
       let signingCmd = createSigningCommand(
@@ -140,11 +140,11 @@ export const local = (chainId, pactCode, envData, caps=[], gasLimit=15000, gasPr
     else {
       cmd = createPactCommand(getState, chainId, pactCode, envData, gasLimit, gasPrice);
     }
-    console.log('cmd', cmd);
+    // console.log('cmd', cmd);
 
     if (dontUpdate) {
       let res = await localCommand(getState, chainId, cmd);
-      console.log(res);
+      // console.log(res);
       return res;
     }
     

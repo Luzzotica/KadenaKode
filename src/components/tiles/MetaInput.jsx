@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
+import { setChainIds, setGasLimit, setGasPrice } from "../../store/metaSlice";
 import { setNetwork, setNetworkId } from "../../kda-wallet/store/kadenaSlice";
-import { setChainId, setGasLimit, setGasPrice } from "../../store/metaSlice";
 import FlexColumn from "../layout/FlexColumn";
 import FlexRow from "../layout/FlexRow";
 
@@ -10,7 +10,11 @@ function MetaInput(props) {
   const onInputChanged = (value) => {
     let id = value.target.id;
     if (id === 'chainId') {
-      dispatch(setChainId(value.target.value));
+      var chainIds = value.target.value.split(',')
+        .map(e => e.trim())
+        .filter(e => e !== '');
+      console.log(chainIds);
+      dispatch(setChainIds(chainIds));
     }
     else if (id === 'network') {
       dispatch(setNetwork(value.target.value));
@@ -30,7 +34,7 @@ function MetaInput(props) {
     <FlexColumn className='gap-4'>
       <FlexRow className='h-auto text-left gap-2'>
         <FlexColumn className='flex-1'>
-          <span>Chain ID:</span>
+          <span>Chain IDs, (1, 2, 5, 6...):</span>
           <input 
             id="chainId"
             defaultValue="1"

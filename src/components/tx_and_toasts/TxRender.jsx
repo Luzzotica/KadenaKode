@@ -10,7 +10,7 @@ function TxRender(props) {
     // If the tx result is empty, we are listening
     if (typeof(txData.result) === 'undefined') {
       txResult = 'Result';
-      data = 'Listening...';
+      data = txData.message ? txData.message : 'Listening...';
     }
     else { // Otherwise, load the data in
       res = txData.result;

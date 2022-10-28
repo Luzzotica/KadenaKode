@@ -19,7 +19,7 @@ function Capabilities(props) {
   }
 
   const removeCap = (key) => {
-    console.log("removing cap");
+    // console.log("removing cap");
     setCapKeys(capKeys.filter(function(k) { 
       return k !== key;
     }));

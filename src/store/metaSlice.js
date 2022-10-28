@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 export const metaSlice = createSlice({
   name: 'metaInfo',
   initialState: {
-    chainId: '1',
+    chainIds: ['1'],
     gasLimit: 15000,
     gasPrice: 1e-5,
     caps: {},
@@ -11,8 +11,8 @@ export const metaSlice = createSlice({
     code: '',
   },
   reducers: {
-    setChainId: (state, action) => {
-      state.chainId = action.payload;
+    setChainIds: (state, action) => {
+      state.chainIds = action.payload;
     },
     setGasLimit: (state, action) => {
       state.gasLimit = action.payload;
@@ -39,7 +39,7 @@ export const metaSlice = createSlice({
 })
 
 export const { 
-  setChainId, setGasLimit, setGasPrice, setCapabilities, 
+  setChainIds, setGasLimit, setGasPrice, setCapabilities, 
   writeCap, removeCap, setEnvData, setCode 
 } = metaSlice.actions;
 
