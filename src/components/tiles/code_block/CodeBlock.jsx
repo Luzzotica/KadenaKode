@@ -14,7 +14,7 @@ function CodeBlock(props) {
   const dispatch = useDispatch();
   const code = useSelector(state => state.metaInfo.code);
   const envData = useSelector(state => state.metaInfo.envData);
-  const chainIds = useSelector(state => state.metaInfo.chainId);
+  const chainIds = useSelector(state => state.metaInfo.chainIds);
   const caps = useSelector(state => state.metaInfo.caps);
   const gasLimit = useSelector(state => state.metaInfo.gasLimit);
   const gasPrice = useSelector(state => state.metaInfo.gasPrice);
@@ -32,16 +32,16 @@ function CodeBlock(props) {
     dispatch(setCode(value));
   }
 
-  const runCommand = () => {
+  const runCommand = async () => {
     let capsList = Object.values(caps);
     // console.log(capsList);
     for (var chainId of chainIds) {
-      dispatch(signAndSend(chainId, code, envData, capsList, gasLimit, gasPrice));
+      await dispatch(signAndSend(chainId, code, envData, capsList, gasLimit, gasPrice));
     }
   }
 
   const updateLocalSign = async () => {
-    updateLocal(true);
+    dispatch(updateLocal(true));
   }
 
   return (

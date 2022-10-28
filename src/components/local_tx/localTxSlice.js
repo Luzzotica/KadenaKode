@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { local } from "../../kda-wallet/store/kadenaSlice";
+import { addMessage, local } from "../../kda-wallet/store/kadenaSlice";
 
 export const localTxSlice = createSlice({
   name: 'localTx',
@@ -22,6 +22,19 @@ export const {
 
 export const updateLocal = (sign = false) => {
   return async function(dispatch, getState) {
+    // If no wallet is connected, and we want to sign, just throw a toast
+    if (sign) {
+      let providerName = getState().kadenaInfo.provider;
+      if (providerName === '') {
+        dispatch(addMessage({
+          type: 'error',
+          data: `No wallet connected`,
+        }));
+        return;
+      }
+    }
+    
+
     let metaInfo = getState().metaInfo;
     const { code, envData, caps, gasLimit, gasPrice, chainIds } = metaInfo;
     let capsList = Object.values(caps);
