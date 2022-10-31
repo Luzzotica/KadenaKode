@@ -6,6 +6,7 @@ import Tile from "./Tile";
 function EnvData(props) {
   const dispatch = useDispatch();
   const envData = useSelector(state => state.metaInfo.envData);
+  const envDataString = JSON.stringify(envData);
 
   const envDataEditorChanged = (value, event) => {
     try {
@@ -24,7 +25,7 @@ function EnvData(props) {
         <Editor
           height="100px"
           defaultLanguage="json"
-          defaultValue={JSON.stringify(envData)}
+          defaultValue={envDataString === '""' ? '' : envDataString}
           theme='vs-dark'
           onChange={envDataEditorChanged}
         />
