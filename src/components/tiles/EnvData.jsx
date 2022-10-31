@@ -6,7 +6,7 @@ import Tile from "./Tile";
 function EnvData(props) {
   const dispatch = useDispatch();
   const envData = useSelector(state => state.metaInfo.envData);
-  const envDataString = JSON.stringify(envData);
+  const envDataString = JSON.stringify(envData, null, 2);
 
   const envDataEditorChanged = (value, event) => {
     try {
