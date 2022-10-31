@@ -11,11 +11,46 @@ import EnvData from './components/tiles/EnvData';
 import CodeBlock from './components/tiles/code_block/CodeBlock';
 import MetaInput from './components/tiles/MetaInput';
 import Transactions from './components/tiles/Transactions';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import KeySensor from './components/hotkey_button/KeySensor';
+import { useEffect } from 'react';
+import { setNetwork, setNetworkId } from './kda-wallet/store/kadenaSlice';
+import { setCapabilities, setChainIds, setCode, setEnvData, setGasLimit, setGasPrice } from './store/metaSlice';
+
 
 export default function App() {
+  const dispatch = useDispatch();
   const account = useSelector(state => state.kadenaInfo.account);
+
+  useEffect(() => {
+    let urlParams = new URLSearchParams(window.location.search);
+    for (const [key, value] of urlParams) {
+      if (key === 'network') {
+        dispatch(setNetwork(value));
+      }
+      else if (key === 'networkId') {
+        dispatch(setNetworkId(value));
+      }
+      else if (key === 'chainsIds') {
+        dispatch(setChainIds(value));
+      }
+      else if (key === 'gasLimit') {
+        dispatch(setGasLimit(value));
+      }
+      else if (key === 'gasPrice') {
+        dispatch(setGasPrice(value));
+      }
+      else if (key === 'caps') {
+        dispatch(setCapabilities(value));
+      }
+      else if (key === 'envData') {
+        dispatch(setEnvData(value));
+      }
+      else if (key === 'code') {
+        dispatch(setCode(value));
+      }
+    }
+  });
 
   return (
     <div className="w-full flex flex-col items-center bg-slate-600">

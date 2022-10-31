@@ -1,4 +1,4 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setChainIds, setGasLimit, setGasPrice } from "../../store/metaSlice";
 import { setNetwork, setNetworkId } from "../../kda-wallet/store/kadenaSlice";
 import FlexColumn from "../layout/FlexColumn";
@@ -6,10 +6,15 @@ import FlexRow from "../layout/FlexRow";
 
 function MetaInput(props) {
   const dispatch = useDispatch();
+  const network = useSelector(state => state.kadenaInfo.network);
+  const networkId = useSelector(state => state.kadenaInfo.networkId);
+  const chainIds = useSelector(state => state.metaInfo.chainIds);
+  const gasLimit = useSelector(state => state.metaInfo.gasLimit);
+  const gasPrice = useSelector(state => state.metaInfo.gasPrice);
 
   const onInputChanged = (value) => {
     let id = value.target.id;
-    if (id === 'chainId') {
+    if (id === 'chainIds') {
       var chainIds = value.target.value.split(',')
         .map(e => e.trim())
         .filter(e => e !== '');
@@ -36,8 +41,8 @@ function MetaInput(props) {
         <FlexColumn className='flex-1'>
           <span>Chain IDs, (1, 2, 5, 6...):</span>
           <input 
-            id="chainId"
-            defaultValue="1"
+            id="chainIds"
+            defaultValue={chainIds.join(', ')}
             className='flex-auto bg-black rounded-md border-white border-2 p-1'
             onChange={onInputChanged}/>
         </FlexColumn>
@@ -45,7 +50,7 @@ function MetaInput(props) {
           <span>Network:</span>
           <select 
             id="network" 
-            defaultValue="https://api.testnet.chainweb.com" 
+            defaultValue={network}
             className='flex-auto bg-black rounded-md border-white border-2 p-1' 
             onChange={onInputChanged}
           >
@@ -57,7 +62,7 @@ function MetaInput(props) {
           <span>Network ID:</span>
           <select 
             id="networkId" 
-            defaultValue="testnet04" 
+            defaultValue={networkId}
             className='flex-auto bg-black rounded-md border-white border-2 p-1' 
             onChange={onInputChanged}
           >
@@ -72,7 +77,7 @@ function MetaInput(props) {
           <input 
             id="gasLimit"
             type="number"
-            defaultValue="15000"
+            defaultValue={String(gasLimit)}
             className='flex-auto bg-black rounded-md border-white border-2 p-1'
             onChange={onInputChanged}/>
         </FlexColumn>
@@ -81,7 +86,7 @@ function MetaInput(props) {
           <input 
             id="gasPrice"
             // type="number"
-            defaultValue="1e-5"
+            defaultValue={String(gasPrice)}
             className='flex-auto bg-black rounded-md border-white border-2 p-1'
             onChange={onInputChanged}/>
         </FlexColumn>
