@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { removeCap, writeCap } from "../../../store/metaSlice";
 import CustomButton from "../../layout/CustomButton";
 import Tile from "../Tile";
@@ -13,17 +13,25 @@ function Capabilities(props) {
 
   const addCap = () => {
     dispatch(writeCap({ key: capKey, cap: Pact.lang.mkCap('', '', '', []) }));
-    setCapKeys([...capKeys, capKey]);
-    setCapKey(capKey + 1);
+    // setCapKeys([...capKeys, capKey]);
+    // setCapKey(capKey + 1);
   }
 
   const deleteCap = (key) => {
-    console.log("removing cap");
     dispatch(removeCap(key));
-    setCapKeys(capKeys.filter(function(k) { 
-      return k !== key;
-    }));
+    // setCapKeys(capKeys.filter(function(k) { 
+    //   return k !== key;
+    // }));
   }
+  
+  // Init the caps if we have any
+  const caps = useSelector(state => state.metaInfo.caps);
+  useEffect(() => {
+    // console.log('swag');
+    var capKeysList = Object.keys(caps).map(e => Number(e));
+    setCapKey(Math.max(capKeysList) + 1);
+    setCapKeys(capKeysList);
+  }, [caps]);
 
   return (
     <Tile title="Capabilities">

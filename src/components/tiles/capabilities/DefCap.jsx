@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { writeCap } from "../../../store/metaSlice";
 import CustomButton from "../../layout/CustomButton";
 import FlexColumn from "../../layout/FlexColumn";
@@ -10,10 +10,11 @@ import CustomInput from "../../layout/CustomInput";
 
 function DefCap(props) {
   const dispatch = useDispatch();
-  const [role, setRole] = useState(props.role ? props.role : '');
-  const [description, setDescription] = useState(props.description ? props.description : '');
-  const [name, setName] = useState(props.name ? props.name : '');
-  const [args, setArgs] = useState(props.argsString ? JSON.parse(props.argsString) : []);
+  const caps = useSelector(state => state.metaInfo.caps);
+  const [role, setRole] = useState(caps[props.keyId] ? caps[props.keyId].role : "");
+  const [description, setDescription] = useState(caps[props.keyId] ? caps[props.keyId].description : "");
+  const [name, setName] = useState(caps[props.keyId] ? caps[props.keyId].cap.name : "");
+  const [args, setArgs] = useState(caps[props.keyId] ? caps[props.keyId].cap.args : []);
 
   const argsEditorChanged = (value, event) => {
     try {
@@ -55,6 +56,7 @@ function DefCap(props) {
   }, [role, name, description, args]);
 
   const updateCap = () => {
+    // console.log("Role:", role, "Name: ",  name, "Desc", description, "Args", args);
     dispatch(writeCap({ key: props.keyId, cap: Pact.lang.mkCap(role, description, name, args) }));
   }
 
@@ -65,21 +67,21 @@ function DefCap(props) {
           title="Role:"
           id="role"
           placeholder="Cap Purpose"
-          default={props.role}
+          default={caps[props.keyId].role}
           onInputChanged={onInputChanged}
         />
         <CustomInput
           title="Description:"
           id="description"
           placeholder="One sentence explanation"
-          default={props.description}
+          default={caps[props.keyId].description}
           onInputChanged={onInputChanged}
         />
         <CustomInput
           title="Name (full reference):"
           id="name"
           placeholder="e.g. coin.GAS"
-          default={props.name}
+          default={caps[props.keyId].cap.name}
           onInputChanged={onInputChanged}
         />
       </FlexRow>
@@ -91,7 +93,7 @@ function DefCap(props) {
               height="50px"
               // width="100px"
               defaultLanguage="json"
-              defaultValue={props.argsString}
+              defaultValue={caps[props.keyId].cap.args.join(', ')}
               theme='vs-dark'
               onChange={argsEditorChanged}
               options={{

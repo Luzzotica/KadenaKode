@@ -1,8 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
-import TitleMessageRender from '../../components/tx_and_toasts/TitleMessageRender';
 import providers from '../providers/providers';
 import { createPactCommand, createSigningCommand, listen, localCommand, sendCommand } from '../utils/utils';
-import { hideModal } from './modalSlice';
+import { hideConnectWalletModal } from './connectWalletModalSlice';
 
 export const kadenaSlice = createSlice({
   name: 'kadenaInfo',
@@ -73,7 +72,7 @@ export const connectWithProvider = (providerId) => {
       dispatch(kadenaSlice.actions.setProvider(providerId));
       dispatch(kadenaSlice.actions.setAccount(connectResult.account.account));
       dispatch(kadenaSlice.actions.setPubKey(connectResult.account.publicKey));
-      dispatch(hideModal());
+      dispatch(hideConnectWalletModal());
     }
     else {
       dispatch(kadenaSlice.actions.addMessage({

@@ -1,5 +1,5 @@
 import Editor from "@monaco-editor/react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setEnvData } from "../../store/metaSlice";
 import Tile from "./Tile";
 
@@ -24,7 +24,7 @@ function EnvData(props) {
         <Editor
           height="100px"
           defaultLanguage="json"
-          defaultValue={envData}
+          defaultValue={JSON.stringify(envData)}
           theme='vs-dark'
           onChange={envDataEditorChanged}
         />

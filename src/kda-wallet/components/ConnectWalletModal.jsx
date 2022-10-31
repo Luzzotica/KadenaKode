@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { X_WALLET, ZELCORE } from "../providers/providers";
 import { connectWithProvider } from "../store/kadenaSlice";
-import { hideModal } from "../store/modalSlice";
+import { hideConnectWalletModal } from "../store/connectWalletModalSlice";
 
 function ConnectWalletModal(props) {
   const dispatch = useDispatch();
@@ -12,7 +12,7 @@ function ConnectWalletModal(props) {
   const provider = useSelector(state => state.kadenaInfo.provider);
 
   const closeModal = () => {
-    dispatch(hideModal());
+    dispatch(hideConnectWalletModal());
   }
 
   const connectXWalletClicked = () => {

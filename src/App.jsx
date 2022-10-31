@@ -16,6 +16,9 @@ import KeySensor from './components/hotkey_button/KeySensor';
 import { useEffect } from 'react';
 import { setNetwork, setNetworkId } from './kda-wallet/store/kadenaSlice';
 import { setCapabilities, setChainIds, setCode, setEnvData, setGasLimit, setGasPrice } from './store/metaSlice';
+import ShareButton from './components/ShareButton';
+import { setUnsafe } from './store/miscSlice';
+import Modal from './components/modal/Modal';
 
 
 export default function App() {
@@ -24,32 +27,38 @@ export default function App() {
 
   useEffect(() => {
     let urlParams = new URLSearchParams(window.location.search);
+    var isUnsafe = false;
     for (const [key, value] of urlParams) {
+      isUnsafe = true;
+      // console.log(key, typeof value, value);
       if (key === 'network') {
         dispatch(setNetwork(value));
       }
       else if (key === 'networkId') {
         dispatch(setNetworkId(value));
       }
-      else if (key === 'chainsIds') {
-        dispatch(setChainIds(value));
+      else if (key === 'chainIds') {
+        console.log('ChainIds:', JSON.parse(value));
+        dispatch(setChainIds(JSON.parse(value)));
       }
       else if (key === 'gasLimit') {
-        dispatch(setGasLimit(value));
+        dispatch(setGasLimit(Number(value)));
       }
       else if (key === 'gasPrice') {
-        dispatch(setGasPrice(value));
+        dispatch(setGasPrice(Number(value)));
       }
       else if (key === 'caps') {
-        dispatch(setCapabilities(value));
+        dispatch(setCapabilities(JSON.parse(value)));
       }
       else if (key === 'envData') {
-        dispatch(setEnvData(value));
+        dispatch(setEnvData(JSON.parse(value)));
       }
       else if (key === 'code') {
         dispatch(setCode(value));
       }
     }
+
+    dispatch(setUnsafe(isUnsafe));
   });
 
   return (
@@ -83,6 +92,7 @@ export default function App() {
           <Capabilities/>
           <EnvData/>
           <CodeBlock/>
+          <ShareButton text='Share'/>
           <Transactions/>
           <div className='h-40'/>
         </FlexColumn>
