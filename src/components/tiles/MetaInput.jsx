@@ -72,18 +72,14 @@ function MetaInput(props) {
     }
     else if (id === 'gasLimit') {
       let n = Number(e.target.value);
-      console.log(n);
       if (!isNaN(n)) {
-        console.log(n);
         dispatch(setGasLimit(n));
       }
       setGasLimitText(e.target.value);
     }
     else if (id === 'gasPrice') {
       let n = Number(e.target.value);
-      console.log(n);
       if (!isNaN(n)) {
-        console.log(n);
         dispatch(setGasPrice(n));
       }
       setGasPriceText(e.target.value);
