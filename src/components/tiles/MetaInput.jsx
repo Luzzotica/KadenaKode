@@ -32,6 +32,7 @@ function MetaInput(props) {
 
   const onInputChanged = (e) => {
     let id = e.target.id;
+    console.log(id);
     if (id === 'chainIds') {
       var chainIds = e.target.value.split(',')
         .map((e) => {
@@ -71,7 +72,9 @@ function MetaInput(props) {
     }
     else if (id === 'gasLimit') {
       let n = Number(e.target.value);
-      if (isNaN(n)) {
+      console.log(n);
+      if (!isNaN(n)) {
+        console.log(n);
         dispatch(setGasLimit(n));
       }
       setGasLimitText(e.target.value);
@@ -79,7 +82,8 @@ function MetaInput(props) {
     else if (id === 'gasPrice') {
       let n = Number(e.target.value);
       console.log(n);
-      if (isNaN(n)) {
+      if (!isNaN(n)) {
+        console.log(n);
         dispatch(setGasPrice(n));
       }
       setGasPriceText(e.target.value);
