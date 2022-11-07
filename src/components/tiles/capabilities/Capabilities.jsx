@@ -29,6 +29,7 @@ function Capabilities(props) {
   useEffect(() => {
     // console.log('swag');
     var capKeysList = Object.keys(caps).map(e => Number(e));
+    console.log(capKeysList);
     setCapKey(Math.max(capKeysList) + 1);
     setCapKeys(capKeysList);
   }, [caps]);

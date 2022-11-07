@@ -67,21 +67,21 @@ function DefCap(props) {
           title="Role:"
           id="role"
           placeholder="Cap Purpose"
-          default={caps[props.keyId].role}
+          default={role}
           onInputChanged={onInputChanged}
         />
         <CustomInput
           title="Description:"
           id="description"
           placeholder="One sentence explanation"
-          default={caps[props.keyId].description}
+          default={description}
           onInputChanged={onInputChanged}
         />
         <CustomInput
           title="Name (full reference):"
           id="name"
           placeholder="e.g. coin.GAS"
-          default={caps[props.keyId].cap.name}
+          default={name}
           onInputChanged={onInputChanged}
         />
       </FlexRow>
@@ -93,7 +93,7 @@ function DefCap(props) {
               height="50px"
               // width="100px"
               defaultLanguage="json"
-              defaultValue={caps[props.keyId].cap.args.join(', ')}
+              defaultValue={args.join(', ')}
               theme='vs-dark'
               onChange={argsEditorChanged}
               options={{
