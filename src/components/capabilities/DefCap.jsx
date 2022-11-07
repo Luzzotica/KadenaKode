@@ -37,7 +37,7 @@ function DefCap(props) {
     }
   }
 
-  const deleteCap = () => {
+  const deleteCap = () => { 
     props.onDelete(props.keyId);
   }
 
