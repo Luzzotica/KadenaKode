@@ -27,10 +27,13 @@ function Capabilities(props) {
   // Init the caps if we have any
   const caps = useSelector(state => state.metaInfo.caps);
   useEffect(() => {
-    // console.log('swag');
     var capKeysList = Object.keys(caps).map(e => Number(e));
-    console.log(capKeysList);
-    setCapKey(Math.max(capKeysList) + 1);
+    if (capKeysList.length === 0) {
+      setCapKey(0);
+    }
+    else {
+      setCapKey(Math.max(...capKeysList) + 1);
+    }
     setCapKeys(capKeysList);
   }, [caps]);
 
