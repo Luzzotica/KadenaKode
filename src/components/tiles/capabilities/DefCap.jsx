@@ -18,7 +18,7 @@ function DefCap(props) {
 
   const argsEditorChanged = (value, event) => {
     try {
-      dispatch(setArgs(JSON.parse(`[${value}]`)));
+      dispatch(setArgs(JSON.parse(value)));
     }
     catch (e) {
       // console.log(e);
@@ -93,7 +93,7 @@ function DefCap(props) {
               height="50px"
               // width="100px"
               defaultLanguage="json"
-              defaultValue={args.join(', ')}
+              defaultValue={JSON.stringify(args)}
               theme='vs-dark'
               onChange={argsEditorChanged}
               options={{

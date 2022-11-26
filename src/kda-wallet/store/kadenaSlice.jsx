@@ -175,6 +175,12 @@ export const signAndSend = (chainId, pactCode, envData,
       }
 
       let provider = providers[providerName];
+      // console.log(chainId);
+      // console.log(pactCode);
+      // console.log(envData);
+      // console.log(caps);
+      // console.log(gasLimit);
+      // console.log(gasPrice);
       let signingCmd = createSigningCommand(
         getState, 
         chainId, 

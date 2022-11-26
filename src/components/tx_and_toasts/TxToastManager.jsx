@@ -18,8 +18,6 @@ export const messageToastManager = (message) => {
 }
 
 export const txToastManager = async (txData) => {
-  // console.log('txData');
-  // console.log(txData);
   if (!txData || Object.keys(txData).length === 0) {
     return;
   }
