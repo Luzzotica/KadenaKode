@@ -4,8 +4,8 @@ function TxRender(props) {
   const containerClass = `bg-slate-900 rounded-md p-2 ${props.className}`;
 
   const createTxStructure = (txData) => {
-    // console.log('txData');
-    // console.log(txData);
+    console.log('txData');
+    console.log(txData);
     var res, txResult, data;
     // If the tx result is empty, we are listening
     if (typeof(txData.result) === 'undefined') {
@@ -20,7 +20,7 @@ function TxRender(props) {
     
     return (
       <div className={containerClass}>
-        {props.chainId ? <span className="break-all">Chaind ID: {props.chainId}<br/></span> : <div/>}
+        {props.chainId ? <span className="break-all">Chaind ID: {props.chainId}, Gas: {txData.gas}<br/></span> : <div/>}
         <span className="break-all">TX ID: {props.txData.reqKey}</span>
         <br></br>
         <span className="break-all">TX {txResult}: {data}</span>

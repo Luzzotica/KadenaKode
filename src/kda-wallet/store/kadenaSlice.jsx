@@ -193,7 +193,7 @@ export const signAndSend = (chainId, pactCode, envData,
       // console.log(signingCmd);
       let signedCmd = await provider.sign(getState, signingCmd);
       // console.log('signingCmd');
-      // console.log(signedCmd);
+      console.log(signedCmd);
       let res = await sendCommand(getState, chainId, signedCmd);
       // console.log(res);
 
