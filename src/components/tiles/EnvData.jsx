@@ -23,7 +23,7 @@ function EnvData(props) {
       title="Env Data:">
       <div className='rounded-lg overflow-hidden'>
         <Editor
-          height="100px"
+          height="200px"
           defaultLanguage="json"
           defaultValue={envDataString === '""' ? '' : envDataString}
           theme='vs-dark'
