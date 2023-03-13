@@ -62,7 +62,7 @@ function ConnectWalletModal(props) {
         <button
           className={buttonStyle}
           onClick={connectXWalletClicked}>
-          X WALLET
+          eckoWALLET
         </button>
         <button
           className={buttonStyle}

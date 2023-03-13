@@ -17,7 +17,6 @@ function Transactions(props) {
   }, [transactions]);
 
   return (
-  
     <Tile 
       className="text-left gap-2"
       title="Transactions:">
